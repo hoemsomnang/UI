@@ -1,0 +1,135 @@
+/* style.css */
+.root {
+    -fx-base: #1e1e24; /* Dark Background */
+    -fx-accent: #bc2a8d; /* Instagram Pink */
+    -fx-control-inner-background: #2d2d34;
+}
+
+.main-container {
+    -fx-background-color: #1e1e24;
+}
+
+.top-bar {
+    -fx-background-color: #2d2d34;
+    -fx-border-color: #3f3f46;
+    -fx-border-width: 0 0 1 0;
+}
+
+/* Modern Text Field */
+.modern-field {
+    -fx-background-color: #3f3f46;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #a1a1aa;
+    -fx-background-radius: 5;
+    -fx-padding: 8;
+    -fx-border-color: transparent;
+}
+.modern-field:focused {
+    -fx-border-color: #bc2a8d;
+    -fx-border-radius: 5;
+}
+
+/* Buttons */
+.button {
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+    -fx-padding: 8 15;
+    -fx-background-radius: 5;
+}
+
+.button-primary {
+    -fx-background-color: linear-gradient(to right, #833ab4, #fd1d1d, #fcb045);
+    -fx-text-fill: white;
+}
+
+.button-secondary {
+    -fx-background-color: #3f3f46;
+    -fx-text-fill: white;
+}
+
+.button:hover {
+    -fx-opacity: 0.8;
+}
+
+/* Modern TableView */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #2d2d34;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 40;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #a1a1aa;
+    -fx-alignment: CENTER_LEFT;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #3f3f46;
+}
+
+.table-cell {
+    -fx-text-fill: #e4e4e7;
+    -fx-padding: 10;
+}
+
+/* Progress Bar */
+.progress-bar .track {
+    -fx-background-color: #2d2d34;
+}
+
+/* style.css additions */
+
+.modern-alert {
+    -fx-background-color: #2d2d34;
+    -fx-border-color: #bc2a8d; /* Instagram Pink border */
+    -fx-border-width: 2px;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+}
+
+.modern-alert .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* Style the OK button inside the alert */
+.modern-alert .button {
+    -fx-background-color: #3f3f46;
+    -fx-text-fill: white;
+    -fx-cursor: hand;
+}
+
+.modern-alert .button:hover {
+    -fx-background-color: #bc2a8d;
+}
+
+/* Styling text based on content (Optional: requires a custom CellFactory for best results, 
+   but standard text fill works for simple cases) */
+
+.table-row-cell:filled .table-cell {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* If you want to get fancy, you can add specific colors to the status column */
+.table-cell:contains("Success") {
+    -fx-text-fill: #4bb543; /* Green */
+    -fx-font-weight: bold;
+}
+
+.table-cell:contains("Failed") {
+    -fx-text-fill: #ff4d4d; /* Red */
+    -fx-font-weight: bold;
+}
+
+.table-cell:contains("Downloading") {
+    -fx-text-fill: #fcb045; /* Orange */
+}
