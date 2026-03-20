@@ -16,6 +16,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v144.network.Network;
 
+import application.instagram.constant.DomainConstant;
 import application.instagram.model.PostData;
 import application.instagram.service.InstagramDownloadFile;
 import application.instagram.service.InstagramProfileScraper;
@@ -244,16 +245,22 @@ public class Main extends Application {
         Task<List<PostData>> scrapTask = new Task<>() {
             @Override
             protected List<PostData> call() throws Exception {
-                InstagramProfileScraper scraper = new InstagramProfileScraper();
-                String username = profileUrl.substring(profileUrl.lastIndexOf("/") + 1);
-                Set<String> links = scraper.scrapProfile(username, cookiesArea.getText());
-
-                List<PostData> results = new ArrayList<>();
-                int index = 1;
-                for (String link : links) {
-                    String type = link.contains("/reel/") ? "Reel" : "Photo";
-                    results.add(new PostData(index++, link, type));
-                }
+            	List<PostData> results = new ArrayList<>();
+            	// Instagram Download
+            	if ( profileUrl.contains(DomainConstant.INSTAGRAM ) ) {
+            		InstagramProfileScraper scraper = new InstagramProfileScraper();
+            		String username = profileUrl.split("instagram.com/")[1].split("\\?")[0];
+                    Set<String> links = scraper.scrapProfile(username, cookiesArea.getText());
+                    int index = 1;
+                    for (String link : links) {
+                        String type = link.contains("/reel/") ? "Reel" : "Photo";
+                        results.add(new PostData(index++, link, type, "instagram"));
+                    }
+                // Tiktok Download
+            	} else if ( profileUrl.contains(DomainConstant.TIKTOK ) ) {
+            		
+            	}
+                
                 return results;
             }
         };
