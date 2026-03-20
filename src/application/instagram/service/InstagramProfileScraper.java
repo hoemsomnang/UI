@@ -52,7 +52,7 @@ public class InstagramProfileScraper {
 			wait.until(d -> d.findElements(By.cssSelector("a[href*='/p/'], a[href*='/reel/']")).size() > 0);
 
 			final int MAX_SCROLLS = 200; // hard cap
-			final int MAX_STALE_ROUNDS = 5; // how many consecutive "no change" rounds before giving up
+			final int MAX_STALE_ROUNDS = 3; // how many consecutive "no change" rounds before giving up
 			final int SLEEP_AFTER_SCROLL_MS = 1500;
 
 			int staleRounds = 0;

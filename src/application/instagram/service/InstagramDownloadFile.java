@@ -65,7 +65,16 @@ public class InstagramDownloadFile {
 		options.addArguments("--no-sandbox");
 		options.setExperimentalOption("mobileEmulation", mobileEmulation);
 		options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
-		WebDriverManager.chromedriver().setup();
+		
+		// Force WebDriverManager to use a folder where it has write permissions
+	    String localAppData = System.getenv("LOCALAPPDATA");
+	    String wdmCache = localAppData + "\\InstagramDownloader\\wdm_cache";
+	    
+	    // Configure WebDriverManager before calling setup
+	    io.github.bonigarcia.wdm.WebDriverManager.chromedriver()
+	        .cachePath(wdmCache)
+	        .setup();
+		//WebDriverManager.chromedriver().setup();
 		WebDriver driver = new ChromeDriver(options);
 		try {
 			driver.get( targetUrl );
@@ -300,7 +309,7 @@ public class InstagramDownloadFile {
             }
             return extractCaption();
         """);
-        return caption == null ? "No caption found" : caption.trim();
+        return caption == null ? DateUtils.getCurrentFormatDate(DateUtils.FORMAT_FULL_DATETIME) : caption.trim();
 
 	}
 	

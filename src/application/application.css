@@ -133,3 +133,13 @@
 .table-cell:contains("Downloading") {
     -fx-text-fill: #fcb045; /* Orange */
 }
+.text-field:disabled {
+    -fx-opacity: 0.8;
+    -fx-background-color: #f4f4f4;
+    -fx-text-fill: #555;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #e8e8e8;
+    -fx-font-weight: bold;
+}

@@ -2,11 +2,14 @@
 # https://curl.haxx.se/rfc/cookie_spec.html
 # This is a generated file! Do not edit.
 
-.instagram.com	TRUE	/	TRUE	1805420177	datr	LDGNaaizOG4YM-Jht-qpd5k6
-.instagram.com	TRUE	/	TRUE	1802396177	ig_did	512DBFAB-AB2C-40B6-9912-6D89C5F43303
-.instagram.com	TRUE	/	TRUE	1805420178	mid	aY0xLAALAAEqdGYWJqfi-pjS0Of5
-.instagram.com	TRUE	/	TRUE	1805425724	csrftoken	DNJTnPJvAPmrPi07CAbtMa4dGHYtBk3U
-.instagram.com	TRUE	/	TRUE	1778641724	ds_user_id	49740184761
-.instagram.com	TRUE	/	TRUE	1771469632	wd	1920x945
-.instagram.com	TRUE	/	TRUE	1802400976	sessionid	49740184761%3APADvRnYCJ0ekwB%3A4%3AAYgrE4JpddxwfMUoZz4uaMZYY-OcJ-du8QwNelhR8g
-.instagram.com	TRUE	/	TRUE	0	rur	"VLL\05449740184761\0541802402390:01fea0303a0923c655e2b9af899d9d9085fa4f513d986c808239f3d9cc49c0508f290c06"
+.instagram.com	TRUE	/	TRUE	1803802930	datr	MYF0aYpELAw7CdmmLZSSuIHO
+.instagram.com	TRUE	/	TRUE	1800778935	ig_did	02114DDE-D970-4395-9332-32220613A13F
+.instagram.com	TRUE	/	TRUE	1800778934	ig_nrcb	1
+.instagram.com	TRUE	/	TRUE	1803802934	mid	aXSBNAALAAFnWA4qkE_LNHrqUr1Y
+.instagram.com	TRUE	/	TRUE	1806760786	csrftoken	0MX9b2FFVDqJwa4hhwLBRyG46JbFkhHT
+.instagram.com	TRUE	/	TRUE	1779976786	ds_user_id	80103634714
+.instagram.com	TRUE	/	TRUE	1803863515	ps_l	1
+.instagram.com	TRUE	/	TRUE	1803863515	ps_n	1
+.instagram.com	TRUE	/	TRUE	1772805585	wd	2560x1271
+.instagram.com	TRUE	/	TRUE	0	rur	"SNB\05480103634714\0541803736785:01fe2b16f866716befa19461c47e874ce572cb8e41038de074122fdc3d66eaf6cadf9825"
+.instagram.com	TRUE	/	TRUE	1803736786	sessionid	80103634714%3ABENzCcpVpYa5Tn%3A12%3AAYjoDu4nMMOt2c3ljIk1KraVsqaWeG3bciHwBYarSg
