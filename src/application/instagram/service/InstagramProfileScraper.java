@@ -1,14 +1,11 @@
 package application.instagram.service;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.openqa.selenium.By;
-import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
@@ -21,7 +18,7 @@ import application.instagram.constant.DomainConstant;
 import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class InstagramProfileScraper {
-
+	
 	public Set<String> scrapProfile(String profileName, String rawCookies) throws Exception {
 
 		ChromeOptions options = new ChromeOptions();
