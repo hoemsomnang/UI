@@ -189,3 +189,105 @@
 
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0.3, 0, 5);
 }
+
+/* Modern TextArea */
+.modern-textarea {
+    -fx-background-color: #3f3f46;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #a1a1aa;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+}
+
+.modern-textarea:focused {
+    -fx-border-color: #bc2a8d;
+}
+
+/* Cookie Titles */
+.cookie-title {
+    -fx-text-fill: #e4e4e7;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+}
+/* ===============================
+   COOKIE CONFIGURATION (MODERN)
+   =============================== */
+
+/* TitledPane Container */
+.titled-pane {
+    -fx-text-fill: white;
+}
+
+.titled-pane > .title {
+    -fx-background-color: #2d2d34;
+    -fx-border-color: #3f3f46;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 10 15;
+    -fx-font-weight: bold;
+}
+
+.titled-pane > .title > .text {
+    -fx-fill: #e4e4e7;
+    -fx-font-size: 14px;
+}
+
+/* Content Area */
+.titled-pane > .content {
+    -fx-background-color: #1e1e24;
+    -fx-padding: 10;
+}
+
+/* Cookie Card (Inner Box) */
+.cookie-card {
+    -fx-background-color: #2d2d34;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #3f3f46;
+    -fx-padding: 10;
+}
+
+/* Cookie Section Titles */
+.cookie-title {
+    -fx-text-fill: #e4e4e7;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* Modern TextArea */
+.modern-textarea {
+    -fx-background-color: #3f3f46;
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #a1a1aa;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 10;
+    -fx-font-size: 12px;
+}
+
+/* Focus effect */
+.modern-textarea:focused {
+    -fx-border-color: #bc2a8d;
+    -fx-border-width: 1.5;
+}
+
+/* Scrollbar inside textarea */
+.modern-textarea .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.modern-textarea .thumb {
+    -fx-background-color: #bc2a8d;
+    -fx-background-radius: 5;
+}
+
+/* Save Button Enhancement */
+.button-primary {
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+}
+
+/* Hover glow effect */
+.button-primary:hover {
+    -fx-effect: dropshadow(gaussian, rgba(188,42,141,0.6), 10, 0.3, 0, 2);
+}

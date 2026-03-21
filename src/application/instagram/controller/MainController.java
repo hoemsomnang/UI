@@ -1,7 +1,6 @@
 package application.instagram.controller;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,6 +25,7 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -82,18 +82,48 @@ public class MainController {
 		HBox locationBox = new HBox(12, locationField, browseBtn, downloadButton);
 		locationBox.setPadding(new Insets(5, 15, 15, 15));
 
-		// --- SECTION 3: Cookie Configuration ---
-		cookiesArea = new TextArea();
-		cookiesArea.setPromptText("Paste Netscape format cookies here...");
-		cookiesArea.setPrefHeight(100);
+		// --- SECTION 3: Cookie Configuration (UPGRADED) ---
 
-		saveCookiesBtn = new Button("💾 Save Cookies");
+		TextArea igCookiesArea = new TextArea();
+		igCookiesArea.setPromptText("Instagram cookies (Netscape format)...");
+		igCookiesArea.getStyleClass().add("modern-textarea");
+
+		TextArea tiktokCookiesArea = new TextArea();
+		tiktokCookiesArea.setPromptText("TikTok cookies...");
+		tiktokCookiesArea.getStyleClass().add("modern-textarea");
+
+		// Labels (modern look)
+		Label igLabel = new Label("📸 Instagram Cookies");
+		igLabel.getStyleClass().add("cookie-title");
+
+		Label ttLabel = new Label("🎵 TikTok Cookies");
+		ttLabel.getStyleClass().add("cookie-title");
+
+		// Layout for each
+		VBox igBox = new VBox(5, igLabel, igCookiesArea);
+		igBox.getStyleClass().add("cookie-card");
+		VBox ttBox = new VBox(5, ttLabel, tiktokCookiesArea);
+		ttBox.getStyleClass().add("cookie-card");
+
+		// Side-by-side layout
+		HBox cookiesRow = new HBox(10, igBox, ttBox);
+		HBox.setHgrow(igBox, Priority.ALWAYS);
+		HBox.setHgrow(ttBox, Priority.ALWAYS);
+
+		// Save button
+		Button saveCookiesBtn = new Button("💾 Save Cookies");
+		saveCookiesBtn.getStyleClass().add("button-primary");
 		saveCookiesBtn.setMaxWidth(Double.MAX_VALUE);
-		saveCookiesBtn.setOnAction(e -> saveCookiesToDisk());
 
-		VBox cookieBox = new VBox(8, cookiesArea, saveCookiesBtn);
+		saveCookiesBtn.setOnAction(e -> {
+		    saveCookiesToDisk(igCookiesArea.getText(), tiktokCookiesArea.getText());
+		});
+
+		// Final container
+		VBox cookieBox = new VBox(10, cookiesRow, saveCookiesBtn);
 		cookieBox.setPadding(new Insets(10));
-		TitledPane cookiesPane = new TitledPane("Cookie Configuration", cookieBox);
+
+		TitledPane cookiesPane = new TitledPane("🔐 Cookie Configuration", cookieBox);
 		cookiesPane.setExpanded(false);
 
 		// --- SECTION 4: Progress & Table ---
@@ -102,7 +132,7 @@ public class MainController {
 		progressBar.setMaxWidth(Double.MAX_VALUE);
 
 		setupTable();
-		loadCookiesFromDisk();
+		loadCookiesFromDisk(igCookiesArea, tiktokCookiesArea);
 
 		// Assemble Layout
 		VBox controls = new VBox(0, topBox, locationBox, cookiesPane);
@@ -117,9 +147,8 @@ public class MainController {
 			if (choice != null) {
 				selectedDirectory = choice;
 				locationField.setText(choice.getAbsolutePath());
-
 				// ADD THIS: Automatically load cookies from the new folder if they exist
-				loadCookiesFromDisk();
+				loadCookiesFromDisk(igCookiesArea, tiktokCookiesArea);
 			}
 		});
 
@@ -282,32 +311,38 @@ public class MainController {
 		}
 	}
 
-	private void saveCookiesToDisk() {
+	
+	private void saveCookiesToDisk(String igCookies, String ttCookies) {
 		try {
+			Path base = Path.of(System.getProperty("user.home"), "cookies");
+			Files.createDirectories(base);
 
-			String path = System.getProperty("user.home") + "\\" + "cookies\\" + "ig_cookies.txt";
-			FileWriter writer = new FileWriter(path);
-			writer.write(cookiesArea.getText());
-			writer.close();
-			AlertUtil.show("Cookies saved to: " + path);
+			Files.writeString(base.resolve("ig_cookies.txt"), igCookies);
+			Files.writeString(base.resolve("tt_cookies.txt"), ttCookies);
+
+			AlertUtil.show("Cookies saved successfully!");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void loadCookiesFromDisk() {
+	private void loadCookiesFromDisk(TextArea igArea, TextArea ttArea) {
 		try {
+			Path base = Path.of(System.getProperty("user.home"), "cookies");
 
-			Path path = Path.of(System.getProperty("user.home"), "cookies", "ig_cookies.txt");
-			if (Files.exists(path)) {
-				cookiesArea.setText(Files.readString(path));
-				System.out.println("Cookies loaded from: " + path.toAbsolutePath());
-			} else {
-				// Optional: Clear area if switching to a folder with no cookies
-				// cookiesArea.clear();
+			Path igPath = base.resolve("ig_cookies.txt");
+			Path ttPath = base.resolve("tt_cookies.txt");
+
+			if (Files.exists(igPath)) {
+				igArea.setText(Files.readString(igPath));
 			}
+
+			if (Files.exists(ttPath)) {
+				ttArea.setText(Files.readString(ttPath));
+			}
+
 		} catch (IOException e) {
-			System.err.println("Could not load cookies: " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
