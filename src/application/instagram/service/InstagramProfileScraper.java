@@ -39,7 +39,7 @@ public class InstagramProfileScraper {
 			
 			driver.get( DomainConstant.INSTAGRAM );
 			loadCookies(driver, rawCookies );
-			driver.navigate().refresh(); // refresh after setting cookies to apply session
+			//driver.navigate().refresh(); // refresh after setting cookies to apply session
 
 			String profileUrl = String.format("%s/%s", DomainConstant.INSTAGRAM, profileName );
 			driver.get(profileUrl);

@@ -10,13 +10,15 @@ public class PostData {
 	private final StringProperty link;
 	private final StringProperty type;
 	private final StringProperty status; // New Property
-	private final StringProperty downloadType; 
+	private final StringProperty mediaType; 
+	private final StringProperty profileName; 
 
-	public PostData(int id, String link, String type, String downloadType) {
+	public PostData(int id, String link, String type, String mediaType, String profileName) {
 		this.id = new SimpleIntegerProperty(id);
 		this.link = new SimpleStringProperty(link);
 		this.type = new SimpleStringProperty(type);
-		this.downloadType = new SimpleStringProperty(downloadType);
+		this.mediaType = new SimpleStringProperty(mediaType);
+		this.profileName = new SimpleStringProperty(profileName);
 		this.status = new SimpleStringProperty("Ready"); // Default value
 	}
 
@@ -37,8 +39,11 @@ public class PostData {
 		return status;
 	}
 	
-	public StringProperty downloadType() {
-		return downloadType;
+	public StringProperty mediaType() {
+		return mediaType;
+	}
+	public StringProperty profileName() {
+		return profileName;
 	}
 
 	// Standard getters/setters
@@ -50,11 +55,16 @@ public class PostData {
 		return type.get();
 	}
 	
-	public String getDownloadType() {
-		return downloadType.get();
+	public String getMediaTypee() {
+		return mediaType.get();
+	}
+	public String getProfileName() {
+		return profileName.get();
 	}
 
 	public void setStatus(String value) {
 		this.status.set(value);
 	}
+	
+	
 }

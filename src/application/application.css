@@ -143,3 +143,49 @@
     -fx-background-color: #e8e8e8;
     -fx-font-weight: bold;
 }
+/* Modern Dialog Container */
+.modern-dialog {
+    -fx-background-color: #2d2d34;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-border-color: #bc2a8d;
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 20, 0.3, 0, 8);
+}
+
+/* Title */
+.alert-title {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Message */
+.modern-dialog .label {
+    -fx-text-fill: #e4e4e7;
+    -fx-font-size: 13px;
+}
+
+/* Button full width */
+.modern-dialog .button {
+    -fx-background-radius: 8;
+}	
+
+/* Toast Container */
+.toast-container {
+    -fx-background-color: transparent;
+}
+
+/* Toast Message */
+.toast {
+    -fx-background-color: #2d2d34;
+    -fx-text-fill: white;
+    -fx-padding: 12 18;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #bc2a8d;
+    -fx-border-width: 1.5;
+    -fx-font-size: 13px;
+
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.6), 15, 0.3, 0, 5);
+}
