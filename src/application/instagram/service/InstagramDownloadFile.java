@@ -38,7 +38,6 @@ import org.openqa.selenium.devtools.v144.network.model.Response;
 
 import application.instagram.constant.ExtensionConstant;
 import application.instagram.utils.DateUtils;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class InstagramDownloadFile {
 

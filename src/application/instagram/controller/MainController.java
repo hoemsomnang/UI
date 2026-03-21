@@ -19,6 +19,8 @@ import application.instagram.constant.DomainConstant;
 import application.instagram.model.PostData;
 import application.instagram.service.InstagramDownloadFile;
 import application.instagram.service.InstagramProfileScraper;
+import application.instagram.service.TikTokVideoDownloadFile;
+import application.instagram.service.TiktokProfileScraper;
 import application.instagram.utils.AlertUtil;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,8 +48,8 @@ public class MainController {
 	private ProgressBar progressBar;
 
 	// Cookie UI
-	private TextArea cookiesArea;
-	private Button saveCookiesBtn;
+	//private TextArea cookiesArea;
+	//private Button saveCookiesBtn;
 
 	// Location UI
 	private TextField locationField;
@@ -152,7 +154,7 @@ public class MainController {
 			}
 		});
 
-		scrapButton.setOnAction(e -> startScraping( stage ));
+		scrapButton.setOnAction(e -> startScraping( stage,igCookiesArea.getText(), tiktokCookiesArea.getText() ));
 		downloadButton.setOnAction(e -> handleDownload());
 
 		return root;
@@ -216,11 +218,8 @@ public class MainController {
 				devTools.createSession();
 				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
 						Optional.empty()));
-
-
-				InstagramDownloadFile downloadService = new InstagramDownloadFile();
+				
 				int total = dataList.size();
-
 				for (int i = 0; i < total; i++) {
 					PostData post = dataList.get(i);
 					final double progress = (double) (i + 1) / total;
@@ -232,15 +231,25 @@ public class MainController {
 					String profileName = post.getProfileName();
 					Path profileFolder = basePath.resolve(profileName);
 					Files.createDirectories(profileFolder.resolve("VDO"));
-					Files.createDirectories(profileFolder.resolve("photos"));
-					// Check if Instagram
+					// Download With Instagram
 					if ( DomainConstant.INSTAGRAM_DOW.equals(post.getMediaTypee()) ) {
+						Files.createDirectories(profileFolder.resolve("photos"));
+						InstagramDownloadFile downloadService = new InstagramDownloadFile();
 						try {
 							if ("Reel".equalsIgnoreCase(post.getType())) {
 								downloadService.downloadReel(post.getLink(), profileFolder.toString(), devTools, driver);
 							} else {
 								downloadService.downloadPhotos(post.getLink(), profileFolder.toString());
 							}
+							javafx.application.Platform.runLater(() -> post.setStatus("✅ Success"));
+						} catch (Exception ex) {
+							javafx.application.Platform.runLater(() -> post.setStatus("❌ Failed"));
+						}
+					// Download With Tiktok
+					} else if ( DomainConstant.TIKTOK_DOW.equals(post.getMediaTypee()) ) {
+						TikTokVideoDownloadFile tiktokDownload = new TikTokVideoDownloadFile();
+						try {
+							tiktokDownload.downloadVideo(post.getLink(), profileFolder.resolve("VDO").toString());
 							javafx.application.Platform.runLater(() -> post.setStatus("✅ Success"));
 						} catch (Exception ex) {
 							javafx.application.Platform.runLater(() -> post.setStatus("❌ Failed"));
@@ -260,7 +269,7 @@ public class MainController {
 		new Thread(downloadTask).start();
 	}
 
-	private void startScraping( Stage stage ) {
+	private void startScraping( Stage stage, String igCookiesArea, String tiktokCookiesArea ) {
 		
 		try {
 			String profileUrl = profileField.getText();
@@ -276,11 +285,12 @@ public class MainController {
 				@Override
 				protected List<PostData> call() throws Exception {
 					List<PostData> results = new ArrayList<>();
+					String username = "";
 					// Instagram Download
 					if (profileUrl.contains(DomainConstant.INSTAGRAM)) {
 						InstagramProfileScraper scraper = new InstagramProfileScraper();
-						String username = profileUrl.split("instagram.com/")[1].split("\\?")[0];
-						Set<String> links = scraper.scrapProfile(username, cookiesArea.getText());
+						username = profileUrl.split("instagram.com/")[1].split("\\?")[0];
+						Set<String> links = scraper.scrapProfile(username, igCookiesArea );
 						int index = 1;
 						for (String link : links) {
 							String type = link.contains("/reel/") ? "Reel" : "Photo";
@@ -288,9 +298,14 @@ public class MainController {
 						}
 						// Tiktok Download
 					} else if (profileUrl.contains(DomainConstant.TIKTOK)) {
-
+						TiktokProfileScraper tiktokScraper = new TiktokProfileScraper();
+						username = profileUrl.split("tiktok.com/")[1].split("\\?")[0];
+						Set<String> links = tiktokScraper.scrapProfile(profileUrl, tiktokCookiesArea );
+						int index = 1;
+						for (String link : links) {
+							results.add(new PostData(index++, link, "Reel", DomainConstant.TIKTOK_DOW, username));
+						}
 					}
-
 					return results;
 				}
 			};
@@ -298,6 +313,7 @@ public class MainController {
 			scrapTask.setOnSucceeded(e -> {
 				dataList.addAll(scrapTask.getValue());
 				progressBar.setVisible(false);
+				AlertUtil.show("Scraping completed");
 			});
 
 			scrapTask.setOnFailed(e -> {
