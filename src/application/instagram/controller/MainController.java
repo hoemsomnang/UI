@@ -54,6 +54,8 @@ public class MainController {
 	// Location UI
 	private TextField locationField;
 	private File selectedDirectory;
+	private ChromeDriver driver;
+	private DevTools devTools;
 
 	public VBox buildLayout(Stage stage) {
 		// --- SECTION 1: Profile Input & Scraping ---
@@ -213,11 +215,10 @@ public class MainController {
 				ChromeOptions options = new ChromeOptions();
 				options.addArguments("--headless=new", "--disable-gpu", "--no-sandbox");
 
-				ChromeDriver driver = new ChromeDriver(options);
-				DevTools devTools = driver.getDevTools();
+				driver = new ChromeDriver(options);
+				devTools = driver.getDevTools();
 				devTools.createSession();
-				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(),
-						Optional.empty()));
+				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
 				
 				int total = dataList.size();
 				for (int i = 0; i < total; i++) {
@@ -249,7 +250,7 @@ public class MainController {
 					} else if ( DomainConstant.TIKTOK_DOW.equals(post.getMediaTypee()) ) {
 						TikTokVideoDownloadFile tiktokDownload = new TikTokVideoDownloadFile();
 						try {
-							tiktokDownload.downloadVideo(post.getLink(), profileFolder.resolve("VDO").toString());
+							tiktokDownload.downloadVideo(post.getLink(), profileFolder.resolve("VDO").toString(), devTools, driver);
 							javafx.application.Platform.runLater(() -> post.setStatus("✅ Success"));
 						} catch (Exception ex) {
 							javafx.application.Platform.runLater(() -> post.setStatus("❌ Failed"));
@@ -362,4 +363,15 @@ public class MainController {
 		}
 	}
 
+	public void shutdown() {
+		try {
+			if (driver != null) {
+				driver.quit();
+				driver = null;
+				System.out.println("ChromeDriver closed.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

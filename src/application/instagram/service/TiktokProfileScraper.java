@@ -33,7 +33,7 @@ public class TiktokProfileScraper {
 
 	private static final int WAIT_SECONDS = 15;
 	private static final int MAX_SCROLLS = 120;
-	private static final int MAX_IDLE_ROUNDS = 3;
+	private static final int MAX_IDLE_ROUNDS = 2;
 	
 	public Set<String> scrapProfile(String profileURL, String rawCookies) throws Exception {
 		
@@ -45,13 +45,9 @@ public class TiktokProfileScraper {
 
 			openHomeAndInjectCookies(driver, wait, rawCookies);
 			videoLinks = scrapeProfileVideos(driver, wait, profileURL);
-
-			log("========================================");
-			log("Total video links found: " + videoLinks.size());
 			for (String link : videoLinks) {
 				log(link);
 			}
-			log("========================================");
 		} catch (Exception e) {
 			error("Fatal error in main", e);
 		} finally {
@@ -121,7 +117,6 @@ public class TiktokProfileScraper {
 		Set<String> videoLinks = new LinkedHashSet<>();
 
 		try {
-			log("Opening profile: " + profileUrl);
 			driver.get(profileUrl);
 
 			wait.until(ExpectedConditions.presenceOfElementLocated(By.tagName("body")));

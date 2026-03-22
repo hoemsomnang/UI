@@ -46,6 +46,7 @@ public class InstagramDownloadFile {
 			scrapLinkPhoto(targetUrl, profileName );
 		} catch (Exception e) {
 			System.err.println("Failed to download image: " + e.getMessage());
+			throw e;
 		}
 	}
 	
@@ -244,6 +245,7 @@ public class InstagramDownloadFile {
 					} catch (Exception e) {
 						e.printStackTrace();
 						System.out.println("Cannot fetch body.");
+						throw e;
 					}
 				}
 			});
@@ -264,6 +266,7 @@ public class InstagramDownloadFile {
 		} catch( Exception e ) {
 			e.printStackTrace();
 			System.out.println("cannot download error" + e.getMessage() );
+			throw e;
 		} 
 
 	}
