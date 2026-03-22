@@ -137,6 +137,7 @@ public class MainController {
 
 		setupTable();
 		loadCookiesFromDisk(igCookiesArea, tiktokCookiesArea);
+		loadLocationFromJson();
 
 		// Assemble Layout
 		VBox controls = new VBox(0, topBox, locationBox, cookiesPane);
@@ -153,6 +154,8 @@ public class MainController {
 				locationField.setText(choice.getAbsolutePath());
 				// ADD THIS: Automatically load cookies from the new folder if they exist
 				loadCookiesFromDisk(igCookiesArea, tiktokCookiesArea);
+				// ✅ Save location immediately
+				saveLocationToJson();
 			}
 		});
 
@@ -361,6 +364,58 @@ public class MainController {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	private void saveLocationToJson() {
+		try {
+			Path base = Path.of(System.getProperty("user.home"), "config");
+			Files.createDirectories(base);
+
+			Path file = base.resolve("config.json");
+
+			String json = "{\n" + "  \"location\": \""
+					+ (selectedDirectory != null ? selectedDirectory.getAbsolutePath().replace("\\", "\\\\") : "")
+					+ "\"\n" + "}";
+
+			Files.writeString(file, json);
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void loadLocationFromJson() {
+		try {
+			Path base = Path.of(System.getProperty("user.home"), "config");
+			Path file = base.resolve("config.json");
+
+			if (!Files.exists(file))
+				return;
+
+			String json = Files.readString(file);
+
+			String location = extractJsonValue(json, "location");
+
+			if (!location.isEmpty()) {
+				selectedDirectory = new File(location);
+				locationField.setText(location);
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private String extractJsonValue(String json, String key) {
+		String pattern = "\"" + key + "\": \"";
+		int start = json.indexOf(pattern);
+		if (start == -1)
+			return "";
+
+		start += pattern.length();
+		int end = json.indexOf("\"", start);
+
+		return json.substring(start, end).replace("\\\\", "\\");
 	}
 
 	public void shutdown() {
