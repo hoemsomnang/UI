@@ -250,6 +250,7 @@ public class InstagramDownloadFile {
 				}
 			});
 			driver.get(url);
+			Thread.sleep(3000);
 			// VERY IMPORTANT: remove listeners to avoid memory leaks
 			devTools.clearListeners();
 			String html = htmlRef.get();

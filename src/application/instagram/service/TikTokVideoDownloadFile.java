@@ -57,7 +57,7 @@ public class TikTokVideoDownloadFile {
 		});
 
 		driver.get(url);
-		Thread.sleep(5000);
+		Thread.sleep(3000);
 		devTools.clearListeners();
 
 		String html = htmlRef.get();
