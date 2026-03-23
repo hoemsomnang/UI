@@ -6,14 +6,20 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.logging.Level;
 
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.devtools.DevTools;
 import org.openqa.selenium.devtools.v144.network.Network;
+import org.openqa.selenium.logging.LogType;
+import org.openqa.selenium.logging.LoggingPreferences;
 
 import application.instagram.constant.DomainConstant;
 import application.instagram.model.PostData;
@@ -22,6 +28,7 @@ import application.instagram.service.InstagramProfileScraper;
 import application.instagram.service.TikTokVideoDownloadFile;
 import application.instagram.service.TiktokProfileScraper;
 import application.instagram.utils.AlertUtil;
+import io.github.bonigarcia.wdm.WebDriverManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -216,13 +223,20 @@ public class MainController {
 			@Override
 			protected Void call() throws Exception {
 				ChromeOptions options = new ChromeOptions();
-				options.addArguments("--headless=new", "--disable-gpu", "--no-sandbox");
 
-				driver = new ChromeDriver(options);
+				Map<String, String> mobileEmulation = new HashMap<>();
+				//mobileEmulation.put("deviceName", "iPhone 12 Pro");
+				options = new ChromeOptions();
+				options.addArguments("--headless");
+				options.addArguments("--disable-gpu");
+				options.addArguments("--no-sandbox");
+				options.setExperimentalOption("mobileEmulation", mobileEmulation);
+				options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36");
+				driver = new ChromeDriver(options); 
 				devTools = driver.getDevTools();
 				devTools.createSession();
 				devTools.send(Network.enable(Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()));
-				
+			
 				int total = dataList.size();
 				for (int i = 0; i < total; i++) {
 					PostData post = dataList.get(i);
@@ -243,7 +257,7 @@ public class MainController {
 							if ("Reel".equalsIgnoreCase(post.getType())) {
 								downloadService.downloadReel(post.getLink(), profileFolder.toString(), devTools, driver);
 							} else {
-								downloadService.downloadPhotos(post.getLink(), profileFolder.toString());
+								downloadService.downloadPhotos(post.getLink(), profileFolder.toString(),devTools, driver );
 							}
 							javafx.application.Platform.runLater(() -> post.setStatus("✅ Success"));
 						} catch (Exception ex) {
@@ -288,13 +302,23 @@ public class MainController {
 			Task<List<PostData>> scrapTask = new Task<>() {
 				@Override
 				protected List<PostData> call() throws Exception {
-					List<PostData> results = new ArrayList<>();
 					String username = "";
+					List<PostData> results = new ArrayList<>();
 					// Instagram Download
 					if (profileUrl.contains(DomainConstant.INSTAGRAM)) {
 						InstagramProfileScraper scraper = new InstagramProfileScraper();
+						ChromeOptions options = new ChromeOptions();
+						options.addArguments("--headless=new");
+						options.addArguments("--disable-gpu");
+						options.addArguments("--no-sandbox");
+						options.addArguments("--disable-dev-shm-usage");
+						options.addArguments("--window-size=1920,1080");
+						options.addArguments("--disable-blink-features=AutomationControlled");
+						WebDriverManager.chromedriver().setup();
+						driver = new ChromeDriver(options);
+						
 						username = profileUrl.split("instagram.com/")[1].split("\\?")[0];
-						Set<String> links = scraper.scrapProfile(username, igCookiesArea );
+						Set<String> links = scraper.scrapProfile(username, igCookiesArea, driver );
 						int index = 1;
 						for (String link : links) {
 							String type = link.contains("/reel/") ? "Reel" : "Photo";
@@ -303,8 +327,26 @@ public class MainController {
 						// Tiktok Download
 					} else if (profileUrl.contains(DomainConstant.TIKTOK)) {
 						TiktokProfileScraper tiktokScraper = new TiktokProfileScraper();
+						LoggingPreferences loggingPreferences = new LoggingPreferences();
+						loggingPreferences.enable(LogType.PERFORMANCE, Level.ALL);
+						ChromeOptions options = new ChromeOptions();
+						options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+						options.addArguments("--headless=new");
+						options.addArguments("--disable-gpu");
+						options.addArguments("--no-sandbox");
+						options.addArguments("--disable-dev-shm-usage");
+						options.addArguments("--window-size=1920,1080");
+						options.addArguments("--disable-blink-features=AutomationControlled");
+						options.addArguments("--lang=en-US");
+						options.addArguments("--remote-allow-origins=*");
+						options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+								+ "AppleWebKit/537.36 (KHTML, like Gecko) " + "Chrome/133.0.0.0 Safari/537.36");
+						options.setCapability("goog:loggingPrefs", loggingPreferences);
+						WebDriverManager.chromedriver().setup();
+						driver = new ChromeDriver(options);
+
 						username = profileUrl.split("tiktok.com/")[1].split("\\?")[0];
-						Set<String> links = tiktokScraper.scrapProfile(profileUrl, tiktokCookiesArea );
+						Set<String> links = tiktokScraper.scrapProfile(profileUrl, tiktokCookiesArea, driver );
 						int index = 1;
 						for (String link : links) {
 							results.add(new PostData(index++, link, "Reel", DomainConstant.TIKTOK_DOW, username));

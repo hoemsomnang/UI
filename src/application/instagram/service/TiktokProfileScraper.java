@@ -4,29 +4,24 @@ import java.time.Duration;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.Cookie;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.logging.LogEntries;
 import org.openqa.selenium.logging.LogEntry;
 import org.openqa.selenium.logging.LogType;
-import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import application.instagram.constant.DomainConstant;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class TiktokProfileScraper {
 
@@ -35,14 +30,11 @@ public class TiktokProfileScraper {
 	private static final int MAX_SCROLLS = 120;
 	private static final int MAX_IDLE_ROUNDS = 2;
 	
-	public Set<String> scrapProfile(String profileURL, String rawCookies) throws Exception {
+	public Set<String> scrapProfile(String profileURL, String rawCookies, ChromeDriver driver ) throws Exception {
 		
-		WebDriver driver = null;
 		Set<String> videoLinks = null;
 		try {
-			driver = createHeadlessDriver();
 			WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(WAIT_SECONDS));
-
 			openHomeAndInjectCookies(driver, wait, rawCookies);
 			videoLinks = scrapeProfileVideos(driver, wait, profileURL);
 			for (String link : videoLinks) {
@@ -56,40 +48,6 @@ public class TiktokProfileScraper {
 		return videoLinks;
 		
 	}
-	
-	private  WebDriver createHeadlessDriver() {
-		try {
-			LoggingPreferences loggingPreferences = new LoggingPreferences();
-			loggingPreferences.enable(LogType.PERFORMANCE, Level.ALL);
-
-			ChromeOptions options = new ChromeOptions();
-			options.setPageLoadStrategy(PageLoadStrategy.EAGER);
-
-			options.addArguments("--headless=new");
-			options.addArguments("--disable-gpu");
-			options.addArguments("--no-sandbox");
-			options.addArguments("--disable-dev-shm-usage");
-			options.addArguments("--window-size=1920,1080");
-			options.addArguments("--disable-blink-features=AutomationControlled");
-			options.addArguments("--lang=en-US");
-			options.addArguments("--remote-allow-origins=*");
-			options.addArguments("--user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-					+ "AppleWebKit/537.36 (KHTML, like Gecko) " + "Chrome/133.0.0.0 Safari/537.36");
-
-			options.setCapability("goog:loggingPrefs", loggingPreferences);
-
-			WebDriverManager.chromedriver().setup();
-			ChromeDriver driver = new ChromeDriver(options);
-
-			removeAutomationSignals(driver);
-
-			return driver;
-
-		} catch (Exception e) {
-			throw new RuntimeException("Failed to create headless ChromeDriver", e);
-		}
-	}
-	
 	
 	private  void openHomeAndInjectCookies(WebDriver driver, WebDriverWait wait, String cookieFile) {
 		try {
@@ -319,17 +277,6 @@ public class TiktokProfileScraper {
 			return idx > -1 ? url.substring(0, idx) : url;
 		} catch (Exception e) {
 			return url;
-		}
-	}
-
-	private  void removeAutomationSignals(ChromeDriver driver) {
-		try {
-			driver.executeScript("Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"
-					+ "Object.defineProperty(navigator, 'platform', {get: () => 'Win32'});"
-					+ "Object.defineProperty(navigator, 'language', {get: () => 'en-US'});"
-					+ "Object.defineProperty(navigator, 'languages', {get: () => ['en-US','en']});");
-		} catch (Exception e) {
-			log("removeAutomationSignals error: " + e.getMessage());
 		}
 	}
 
